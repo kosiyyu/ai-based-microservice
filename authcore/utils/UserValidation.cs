@@ -13,7 +13,7 @@ public static class UserValidation
     List<string> errorStrings = new();
     isValidResult result = new isValidResult();
 
-    if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 32)
+    if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8 || user.Password.Length > 32)
     {
       errorStrings.Add("Invalid password");
     }
