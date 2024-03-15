@@ -10,17 +10,19 @@ await ctx.Database.EnsureCreatedAsync();
 
 app.MapGet("/", () => "Hello World!");
 
-app.MapPost("/test", async (User user) => {
-  // todo: validate user
-  if(await ctx.Users.AnyAsync(u => u.Email == user.Email)){
-    return "User already exists";
+app.MapPost("/register", async (User user) =>
+{
+  isValidResult result = await UserValidation.IsValid(user, ctx);
+  if (!result.isValid)
+  {
+    return result.errorStrings.ToString();
   }
 
   user.Password = Aes.Encrypt(user.Password);
 
   ctx.Users.Add(user);
   await ctx.SaveChangesAsync();
-  return "User added";
+  return "User registered";
 });
 
 app.Run();
