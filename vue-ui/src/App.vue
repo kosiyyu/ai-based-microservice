@@ -1,4 +1,30 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import axios from 'axios';
+
+
+const email = ref('');
+const password = ref('');
+
+const submitForm = () => {
+  console.log(email.value, password.value);
+
+  axios.post('http://localhost:5105/login', {
+    email: email.value,
+    password: password.value
+  }, {
+    withCredentials: true
+  })
+  .then(response => {
+    console.log(response.data);
+    email.value = '';
+    password.value = '';
+  })
+  .catch(error => {
+    console.log(error);
+  });
+};
+
 
 </script>
 
@@ -31,14 +57,14 @@
       <div class="bg-black border border-black flex flex-col items-center justify-center p-6 inline-block rounded-tr-lg rounded-br-lg">
         <div class="m-2 flex flex-col">
           <label class="text-special-pink font-bold mb-2">Email</label>
-          <input class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink"/>
+          <input v-model="email" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink"/>
         </div>
         <div class="p-2 flex flex-col">
           <label class="text-special-pink font-bold mb-2">Password</label>
-          <input class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink"/>
+          <input v-model="password" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink" type="password"/>
         </div>
         <div class="flex items-center justify-center p-2">
-          <button class="bg-special-pink hover:bg-special-pink text-black font-bold py-1 px-4 rounded-full">
+          <button @click="submitForm" class="bg-special-pink hover:bg-special-pink text-black font-bold py-1 px-4 rounded-full">
             Log in
           </button>
         </div>
