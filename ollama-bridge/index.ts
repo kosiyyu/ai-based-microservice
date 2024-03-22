@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 import { Ollama } from 'ollama-node';
 
+// conf
 const ollama = new Ollama();
 ollama.setModel('dolphin-phi')
 .then(() => {
@@ -12,6 +13,7 @@ ollama.setModel('dolphin-phi')
 const wss = new WebSocket.Server({ port: 3333 }, () =>{
   console.log(`Server is running on port ${wss.options.port}`);
 });
+//
 
 function connectionString(prompt: string) {
   wss.on('connection', function connection(ws) {
