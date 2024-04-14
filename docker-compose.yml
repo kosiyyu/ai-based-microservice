@@ -1,25 +1,47 @@
 version: '3.8'
 
 services:
-  authcoredb:
-    image: postgres
+#   authcoredb:
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: ${POSTGRES_USER}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#       POSTGRES_DB: ${POSTGRES_DB_NAME}
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - authcoredb_data:/var/lib/postgresql/data
+#   pgadmin4:
+#     image: dpage/pgadmin4
+#     environment:
+#       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+#       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+#     ports:
+#       - "5050:80"
+#     depends_on:
+#       - authcoredb
+
+# volumes:
+#   authcoredb_data:
+  auth-service-db:
+    image: mongo
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - "5432:5432"
+      - 27017:27017
     volumes:
-      - authcoredb_data:/var/lib/postgresql/data
-  pgadmin4:
-    image: dpage/pgadmin4
+      - auth-service-db:/data/db
+  mongo-express:
+    image: mongo-express
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${ME_CONFIG_MONGODB_ADMINUSERNAME}:${ME_CONFIG_MONGODB_ADMINPASSWORD}@auth-service-db:27017/
     ports:
-      - "5050:80"
+      - 8081:8081
     depends_on:
-      - authcoredb
+      - auth-service-db
 
 volumes:
-  authcoredb_data:
+  auth-service-db:

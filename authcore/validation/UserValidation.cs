@@ -10,7 +10,7 @@ public static class UserValidation
 {
   public static async Task<isValidResult> IsValid(User user, UserContext ctx)
   {
-    List<string> errorStrings = new();
+    List<string> errorStrings = [];
     isValidResult result = new isValidResult();
 
     if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8 || user.Password.Length > 32)
