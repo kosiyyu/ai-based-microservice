@@ -1,34 +1,25 @@
-import { WebSocket } from 'ws';
-import { Ollama } from 'ollama-node';
+import { WebSocket } from "ws";
+import { Ollama } from "ollama-node";
 
-// conf
 const ollama = new Ollama();
-ollama.setModel('dolphin-phi')
-.then(() => {
-  console.log("Model loaded");
-}).catch((err) => {
-  console.log(err);
-});
-
-const wss = new WebSocket.Server({ port: 3333 }, () =>{
-  console.log(`Server is running on port ${wss.options.port}`);
-});
-//
-
-function connectionString(prompt: string) {
-  wss.on('connection', function connection(ws) {
-    //todo validate connection
-    console.log('connected')
-    ollama.streamingGenerate(prompt, (word: string) => {
-      ws.send(word);
-    });
+ollama.setModel("dolphin-phi")
+  .then(() => {
+    console.log("Model loaded");
+  }).catch((err) => {
+    console.log(err);
   });
-}
 
-wss.on('connection', function connection(ws) {
-  //todo validate connection
-  console.log('connected')
-  ollama.streamingGenerate("why is the sky blue", (word: string) => {
-    ws.send(word);
+const wsServer = new WebSocket.Server({ port: 3333 }, () => {
+  console.log(`Server is running on port ${wsServer.options.port}`);
+});
+
+wsServer.on("connection", socket => {
+  console.log("connected")
+
+  socket.on("message", function(msg) {
+    console.log('received: %s', msg);
+      ollama.streamingGenerate(`${msg}`, (output: string) => {
+        socket.send(output);
+      });
   });
 });
