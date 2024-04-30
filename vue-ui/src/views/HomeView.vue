@@ -1,23 +1,38 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { isAuthenticated, getName } from "@/utils/authUtils";
 import axios from 'axios';
 
 const email = ref('');
 const password = ref('');
+const router = useRouter();
+
+function clearInputFields() {
+  email.value = '';
+  password.value = '';
+}
 
 const submitForm = () => {
   console.log(email.value, password.value);
 
-  axios.post('http://localhost:5105/login', {
+  axios.post('http://localhost:5003/api/authenticate', {
     email: email.value,
     password: password.value
   }, {
     withCredentials: true
   })
   .then(response => {
-    console.log(response.data);
-    email.value = '';
-    password.value = '';
+    const jwt = response.data;
+    if (!jwt) {
+      clearInputFields();
+      return;
+    }
+    localStorage.setItem('jwt', jwt);
+    localStorage.setItem('name', getName(jwt))
+    clearInputFields();
+    isAuthenticated.value = true;
+    router.push({ name: 'chat' });
   })
   .catch(error => {
     console.log(error);
