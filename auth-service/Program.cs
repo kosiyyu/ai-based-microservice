@@ -10,7 +10,7 @@ var jwtIssuer = EnvSettings.JwtIssuer;
 var jwtKey = EnvSettings.JwtKey;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(x => 
+    .AddJwtBearer(x =>
     {
         x.TokenValidationParameters = new TokenValidationParameters
         {
@@ -34,12 +34,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+    builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 builder.Services.AddSingleton<MongoDBSettings>();
 builder.Services.AddSingleton<UserService>();
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
+app.UseCors("CorsPolicy");
 app.MapControllers();
-
 app.Run();

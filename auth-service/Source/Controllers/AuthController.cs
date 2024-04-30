@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Dto;
 
 namespace Controller;
 
@@ -20,17 +21,17 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("authentication")]
-    public async Task<IActionResult> Authentication(User user)
+    [HttpPost("authenticate")]
+    public async Task<IActionResult> Authentication(UserSimplified userSimplified)
     {   
-        var fetchedUser = await _userService.GetAsync(user.Email);
+        var fetchedUser = await _userService.GetAsync(userSimplified.Email);
 
         if(fetchedUser == null)
         {
             return Unauthorized();
         }
 
-        if(!(user.Email == fetchedUser.Email && user.Password == fetchedUser.Password))
+        if(!(userSimplified.Email == fetchedUser.Email && userSimplified.Password == fetchedUser.Password))
         {
             return Unauthorized();
         }
@@ -40,7 +41,8 @@ public class AuthController : ControllerBase
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, fetchedUser.Id.ToString())
+            new Claim(ClaimTypes.NameIdentifier, fetchedUser.Id.ToString()),
+            new Claim(ClaimTypes.Name, fetchedUser.Name)
         };
 
         var Sectoken = new JwtSecurityToken(
@@ -57,7 +59,7 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("validatebearer")]
+    [HttpGet("validate")]
     public IActionResult ValidateBearer()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
