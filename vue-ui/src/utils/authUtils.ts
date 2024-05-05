@@ -42,3 +42,10 @@ export async function checkIsAuthenticated() {
 export function getName(jwt: string): string {
   return jwtDecode<PartialCustomJwtPayload>(jwt)['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
 }
+
+export function logout() {
+  localStorage.removeItem('jwt');
+  localStorage.removeItem('name');
+  isAuthenticated.value = false;
+  router.push({ name: 'home' });
+}

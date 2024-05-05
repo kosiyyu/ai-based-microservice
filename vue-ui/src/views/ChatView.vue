@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { type QuestionResponse, connPromise, isWebSocket, checkConnection} from "../utils/chatUtils";
+import { isAuthenticated } from "@/utils/authUtils";
+import NavBar from "@/components/NavBar.vue";
 
 const wsString = "ws://localhost:3333";
 
@@ -53,24 +55,7 @@ function send(question: string) {
 </script>
 
 <template>
-  <header class="bg-white py-2 px-1">
-    <div class="flex items-center justify-between bg-white rounded-lg py-2 px-2">
-      <div class="text-white">Logo</div>
-      <div class="flex items-center">
-        <button class="bg-white h-8 hover:bg-special text-black font-bold py-1 px-4 rounded-full ml-2">
-          Log in
-        </button>
-        <button class="bg-white h-8 hover:bg-special text-black font-bold py-1 px-4 rounded-full ml-2">
-          Register
-        </button>
-        <div class="ml-2 h-8 w-8">
-          <a href="https://github.com/kosiyyu/ai-based-microservice">
-            <img src="../assets/github-mark.svg" />
-          </a>
-        </div>
-      </div>
-    </div>
-  </header>
+  <NavBar :is-authenticated="isAuthenticated" />
   <main class="bg-green-950 flex flex-col items-center h-screen">
     <div v-if="conversation.length">
       <div v-for="qr in conversation" :key="qr.question" class="flex flex-col mt-2">
@@ -104,10 +89,10 @@ function send(question: string) {
         {{ isConnected ? 'Disconnect' : 'Connect' }}
       </button>
       <div v-if="isConnected">
-        <span class="flex w-3 h-3 me-3 bg-green-500 rounded-full"></span> <!-- Removed self-end and bottom-0 classes -->
+        <span class="flex w-3 h-3 me-3 bg-green-500 rounded-full"></span>
       </div>
       <div v-else>
-        <span class="flex w-3 h-3 me-3 bg-red-500 rounded-full"></span> <!-- Removed self-end and bottom-0 classes -->
+        <span class="flex w-3 h-3 me-3 bg-red-500 rounded-full"></span>
       </div>
     </div>
   </main>

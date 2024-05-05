@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { isAuthenticated, checkIsAuthenticated } from '@/utils/authUtils';
-import HomeView from '@/views/HomeView.vue';
+import LoginView from '@/views/LoginView.vue';
 import ChatView from '@/views/ChatView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 
@@ -8,12 +8,17 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      beforeEnter: () => {
+      path: '/login',
+      beforeEnter: (_to, _from, next) => {
         checkIsAuthenticated();
+        if (isAuthenticated.value) {
+          next({ name: 'chat'});
+        } else {
+          next();
+        }
       },
       name: 'home',
-      component: HomeView
+      component: LoginView
     },
     {
       path: '/chat',

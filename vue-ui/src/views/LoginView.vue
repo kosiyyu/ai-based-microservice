@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import router from '@/router';
 import { isAuthenticated, getName } from "@/utils/authUtils";
 import axios from 'axios';
+import NavBar from '@/components/NavBar.vue';
 
 const email = ref('');
 const password = ref('');
-const router = useRouter();
 
 function clearInputFields() {
   email.value = '';
@@ -42,28 +42,11 @@ const submitForm = () => {
 </script>
 
 <template>
-  <header class="bg-white py-2 px-1">
-    <div class="flex items-center justify-between bg-white rounded-lg py-2 px-2">
-      <div class="text-white">Logo</div>
-      <div class="flex items-center">
-        <button class="bg-white h-8 hover:bg-special text-black font-bold py-1 px-4 rounded-full ml-2">
-          Log in
-        </button>
-        <button class="bg-white h-8 hover:bg-special text-black font-bold py-1 px-4 rounded-full ml-2">
-          Register
-        </button>
-        <div class="ml-2 h-8 w-8">
-          <a href="https://github.com/kosiyyu/ai-based-microservice">
-            <img src="../assets/github-mark.svg"/>
-          </a>
-        </div>
-      </div>
-    </div>
-  </header>
+    <NavBar :is-authenticated="isAuthenticated"/>
     <main class="bg-green-950 flex flex-col items-center h-screen">
   <div class="flex flex-grow items-center justify-center flex-col">
     <div class="font-special text-special-pink text-5xl mb-4">
-      Application name
+      Login - AI Based Microservice
     </div>
     <div class="flex items-center justify-center">
       <img src="../assets/pixeltrue-vision-1.svg" class="w-72 h-72"/>
