@@ -63,11 +63,11 @@ public class AuthController : ControllerBase
     public IActionResult ValidateBearer()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        var userNameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
 
-        if (userIdClaim != null)
+        if (userIdClaim != null && userNameClaim != null)
         {
-            var userId = userIdClaim.Value;
-            return Ok(userId);
+            return Ok();
         }
 
         return Unauthorized();

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { isAuthenticated, getName } from "@/utils/authUtils";
 import axios from 'axios';
 
+const name = ref('');
 const email = ref('');
 const password = ref('');
+const confirmPassword = ref('');
 const router = useRouter();
 
 function clearInputFields() {
@@ -14,26 +15,33 @@ function clearInputFields() {
 }
 
 const submitForm = () => {
-  console.log(email.value, password.value);
+    // todo - add propper frontend validation
+    if (password.value !== confirmPassword.value) {
+        alert('Passwords do not match');
+        return;
+    }
+    if(password.value.length < 8) {
+        alert('Password must be at least 8 characters');
+        return;
+    }
+    if(name.value.length < 1) {
+        alert('Password must be at least 1 characters');
+        return;
+    }
+    if(email.value.length < 2) {
+        alert('Password must be at least 2 characters');
+        return;
+    }
 
-  axios.post('http://localhost:5003/api/authenticate', {
+  axios.post('http://localhost:5003/api/register', {
+    name: name.value,
     email: email.value,
     password: password.value
-  }, {
-    withCredentials: true
   })
   .then(response => {
-    const jwt = response.data;
-    if (!jwt) {
-      clearInputFields();
-      return;
-    }
-    localStorage.setItem('jwt', jwt);
-    localStorage.setItem('name', getName(jwt))
+    console.log(response);
     clearInputFields();
-    isAuthenticated.value = true;
-    console.log(isAuthenticated.value);
-    router.push({ name: 'chat' });
+    router.push({ name: 'home' });
   })
   .catch(error => {
     console.log(error);
@@ -69,6 +77,10 @@ const submitForm = () => {
       <img src="../assets/pixeltrue-vision-1.svg" class="w-72 h-72"/>
       <div class="bg-black border border-black flex flex-col items-center justify-center p-6 inline-block rounded-tr-lg rounded-br-lg">
         <div class="m-2 flex flex-col">
+          <label class="text-special-pink font-bold mb-2">Name</label>
+          <input v-model="name" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink"/>
+        </div>
+        <div class="m-2 flex flex-col">
           <label class="text-special-pink font-bold mb-2">Email</label>
           <input v-model="email" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink"/>
         </div>
@@ -76,9 +88,13 @@ const submitForm = () => {
           <label class="text-special-pink font-bold mb-2">Password</label>
           <input v-model="password" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink" type="password"/>
         </div>
+        <div class="p-2 flex flex-col">
+          <label class="text-special-pink font-bold mb-2">Confirm password</label>
+          <input v-model="confirmPassword" class="bg-special-pink  text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-special-pink" type="password"/>
+        </div>
         <div class="flex items-center justify-center p-2">
           <button @click="submitForm" class="bg-special-pink hover:bg-special-pink text-black font-bold py-1 px-4 rounded-full">
-            Log in
+            Register
           </button>
         </div>
       </div>
