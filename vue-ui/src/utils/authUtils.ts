@@ -43,6 +43,11 @@ export function getName(jwt: string): string {
   return jwtDecode<PartialCustomJwtPayload>(jwt)['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
 }
 
+export function getJwt(): string {
+  const jwt = localStorage.getItem('jwt');
+  return jwt ? jwt : '';
+}
+
 export function logout() {
   localStorage.removeItem('jwt');
   localStorage.removeItem('name');

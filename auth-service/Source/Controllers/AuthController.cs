@@ -64,7 +64,7 @@ public class AuthController : ControllerBase
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
         var userNameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-
+  
         if (userIdClaim != null && userNameClaim != null)
         {
             return Ok();

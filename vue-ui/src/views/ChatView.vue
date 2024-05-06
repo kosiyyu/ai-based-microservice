@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { type QuestionResponse, connPromise, isWebSocket, checkConnection} from "../utils/chatUtils";
-import { isAuthenticated } from "@/utils/authUtils";
+import { type QuestionResponse, connPromise, isWebSocket, checkConnection } from "../utils/chatUtils";
+import { isAuthenticated, getJwt, checkIsAuthenticated } from "@/utils/authUtils";
 import NavBar from "@/components/NavBar.vue";
 
 const wsString = "ws://localhost:3333";
@@ -9,6 +9,7 @@ const wsString = "ws://localhost:3333";
 let quetionMsg = ref<string>("");
 let isConnected = ref<boolean>(false);
 let conversation = ref<QuestionResponse[]>([]);
+
 let ws: WebSocket | undefined = undefined;
 
 function connect(): void {
@@ -21,7 +22,9 @@ function connect(): void {
     return;
   }
 
-  connPromise(wsString)
+  const jwt = getJwt();
+
+  connPromise(wsString, jwt)
     .then(server => {
       ws = server;
       console.log("connected");
@@ -37,7 +40,9 @@ function connect(): void {
 }
 
 function send(question: string) {
-  if(checkConnection(ws)) {
+  if(!checkConnection(ws)) {
+    isAuthenticated.value = false;
+    checkIsAuthenticated();
     return;
   }
 
@@ -51,6 +56,7 @@ function send(question: string) {
   const index = conversation.value.length - 1;
   conversation.value[index].response = "";
   ws?.send(question);
+  console.log("Sent message:", question);
 }
 </script>
 
@@ -60,7 +66,7 @@ function send(question: string) {
     <div v-if="conversation.length">
       <div v-for="qr in conversation" :key="qr.question" class="flex flex-col mt-2">
         <textarea v-model="qr.question"
-            class="font-bold no-scrollbar rounded-lg bg-special-pink pl-3 py-3 resize-none mb-2" readonly></textarea>
+          class="font-bold no-scrollbar rounded-lg bg-special-pink pl-3 py-3 resize-none mb-2" readonly></textarea>
         <div class="flex items-end">
           <textarea v-model="qr.response"
             class="font-bold rounded-lg bg-special-pink pl-3 py-3 w-full resize-vertical h-auto" readonly></textarea>

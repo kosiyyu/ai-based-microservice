@@ -3,15 +3,11 @@ export type QuestionResponse = {
   response: string | null;
 }
 
-export function connPromise(address: string): Promise<WebSocket> {
+export function connPromise(address: string, token: string): Promise<WebSocket> {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(address);
-    ws.onopen = () => {
-      resolve(ws);
-    }
-    ws.onerror = (err) => {
-      reject(err);
-    }
+    const ws = new WebSocket(address, token);
+    ws.onopen = () => resolve(ws);
+    ws.onerror = err => reject(err);
   });
 }
 
