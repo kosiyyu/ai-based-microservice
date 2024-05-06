@@ -68,9 +68,9 @@ onMounted(() => {
 
 <template>
   <NavBar :is-authenticated="isAuthenticated" />
-  <main class="bg-green-950 flex flex-col items-center h-screen">
-    <div class="w-5/6" v-if="conversation.length">
-      <div v-for="qr in conversation" :key="qr.question" class="flex flex-col mt-2">
+  <main class="bg-green-950 flex flex-col items-center min-h-screen">
+    <div class="w-5/6" v-if="conversation.length" mb-32>
+      <div v-for="qr in conversation" :key="qr.question" class="flex flex-col mt-2 mb-16">
         <textarea v-model="qr.question"
           class="font-bold no-scrollbar rounded-lg bg-special-pink pl-3 py-3 mb-2 w-full resize-vertical h-auto"
           readonly></textarea>
@@ -89,7 +89,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center w-full">
+    <div class="flex items-center justify-center w-ful">
       <div class="flex flex-col items-center fixed bottom-0 w-full justify-center pb-4">
         <div class="flex items-center w-5/6">
           <textarea v-model="quetionMsg"
