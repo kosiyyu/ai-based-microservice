@@ -76,7 +76,7 @@ onMounted(() => {
           readonly></textarea>
         <div class="relative flex items-center">
           <AutoResizingTextarea
-            class="font-bold no-scrollbar rounded-lg bg-special-pink pl-3 py-3 mb-2 w-full resize-vertical h-auto"
+            class="font-bold no-scrollbar rounded-lg bg-special-pink-2 pl-3 py-3 mb-2 w-full resize-vertical h-auto"
             v-model="qr.response" />
           <div class="absolute left-full top-0 ml-2">
             <div v-if="!qr.response || qr.response === ''">
